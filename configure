@@ -6,8 +6,8 @@
 
 
 
-my $CC = "clang++ -fdiagnostics-color=always";
-my $CCFLAGS = "-std=gnu++14 -march=native -O3 -Wall -Wextra";
+my $CC = "clang++";
+my $CCFLAGS = "-fdiagnostics-color=always -std=gnu++14 -march=native -O3 -Wall -Wextra";
 my $LDFLAGS = "";
 my $name = "moge";
 my $dest = "build/$name";
