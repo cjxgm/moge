@@ -59,7 +59,7 @@ namespace meta
 		auto& operator = (self x)
 		{
 			destruct();
-			x.visit<move_constructor>({*this});
+			x.visit_with_nil<move_constructor>({*this});
 			return *this;
 		}
 

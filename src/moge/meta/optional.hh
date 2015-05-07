@@ -24,6 +24,10 @@ namespace meta
 			operator auto& () CONST { return get(); }
 		);
 
+		CONST_HELPER(
+			auto operator -> () CONST { return &get(); }
+		);
+
 	private:
 		using variant_type = variant<T>;
 		variant_type v;

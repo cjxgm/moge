@@ -3,6 +3,7 @@
 #include "exceptions.hh"
 #include "meta/bind.hh"
 #include <GLFW/glfw3.h>
+#include <utility>		// for std::forward
 
 namespace moge
 {
@@ -24,6 +25,19 @@ namespace moge
 					&glfwDestroyWindow
 				};
 			}
+
+			auto& events_from_window(glfw::window* win)
+			{
+				auto up = glfwGetWindowUserPointer(win);
+				auto ev = reinterpret_cast<window_events*>(up);
+				return *ev;
+			}
+
+			template <class F, class ...ARGS>
+			void safe_call(F const& f, ARGS &&... args)
+			{
+				if (f) return f(std::forward<ARGS>(args)...);
+			}
 		}
 
 		window::window(std::string const& title,
@@ -32,6 +46,13 @@ namespace moge
 			: events{std::make_unique<window_events>()}
 			, win{make_window(title, size)}
 		{
+			glfwSetWindowUserPointer(win.get(), events.get());
+
+			// event dispatching
+			glfwSetWindowCloseCallback(win.get(), [](auto win) {
+				glfwSetWindowShouldClose(win, false);
+				safe_call(events_from_window(win).close);
+			});
 		}
 
 		void window::vsync(bool on)

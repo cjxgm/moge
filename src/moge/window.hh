@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <glm/vec2.hpp>
+#include <functional>
 #include "meta/bind-traits.hh"
 #include "system.hh"
 
@@ -22,6 +23,9 @@ namespace moge
 		{
 			using self = window_events;
 			using uptr = std::unique_ptr<self>;
+
+			using close_func = std::function<void ()>;
+			close_func close;
 		};
 
 		struct window
