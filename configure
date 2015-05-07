@@ -6,7 +6,7 @@
 
 
 
-my $CC = "clang++";
+my $CC = "clang++ -fdiagnostics-color=always";
 my $CCFLAGS = "-std=gnu++14 -march=native -O3 -Wall -Wextra";
 my $LDFLAGS = "";
 my $name = "moge";
