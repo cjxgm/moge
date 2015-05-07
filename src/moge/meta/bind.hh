@@ -16,7 +16,7 @@ namespace meta
 
 		bind(value_type const& x)
 		{
-			if (nbound && value != x) throw failure{"multiple bind"};
+			if (nbound && value != x) throw violated{"multiple bind"};
 			if (nbound++) return;
 			value = x;
 			traits::bind(value);
@@ -32,7 +32,7 @@ namespace meta
 		static thread_local std::size_t nbound;
 		static thread_local value_type value;
 
-		struct failure : std::logic_error { using logic_error::logic_error; };
+		struct violated : std::logic_error { using logic_error::logic_error; };
 	};
 
 	template <class TAG>
