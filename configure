@@ -12,7 +12,7 @@ my $LDFLAGS = "";
 my $name = "moge";
 my $dest = "build/$name";
 my $test = "LIBGL_SHOW_FPS=1 $dest";
-my @libs = qw(gl glfw3);
+my @libs = qw(gl glfw3);	# glm: header-only
 my $ver  = `printf "r%s.%s" "\$(git rev-list --count HEAD)" "\$(git rev-parse --short HEAD)"`;
 
 
@@ -152,7 +152,7 @@ bundle: release
 	\@echo "\$(COLOR_CMD)bundling" "\$(COLOR_ARG)$name\$(COLOR_RST)"
 	rm -rf \$(BUNDLE)
 	mkdir -p \$(BUNDLE)
-	cp -r configure makefile room.ed images/ src/ \$(BUNDLE)
+	cp -r configure makefile src/ \$(BUNDLE)
 	cp -r $dest \$(BUNDLE)/\$(BUNDLE)
 	rm -f `find \$(BUNDLE) -name '.*'`
 	tar cvfJ \$(BUNDLE).tar.xz \$(BUNDLE)
