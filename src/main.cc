@@ -9,7 +9,7 @@ int main()
 	win.vsync();
 	win.events->close = [] { moge::system::quit(); };
 
-	meta::optional<moge::window> win2;
+	moge::optional<moge::window> win2;
 	win2 = moge::window{"window 2", {320, 240}};
 	win2->vsync();
 	win2->events->close = [&] { win2 = {}; };

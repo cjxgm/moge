@@ -5,42 +5,47 @@
 #include <stdexcept>
 #include <cstddef>		// for std::size_t
 
-namespace meta
+namespace moge
 {
-	template <class TAG>
-	struct bind : non_transferable
+	namespace meta
 	{
-		using tag = TAG;
-		using traits = bind_traits<tag>;
-		using value_type = typename traits::value_type;
-
-		bind(value_type const& x)
+		template <class TAG>
+		struct bind : non_transferable
 		{
-			if (nbound && value != x) throw violated{"multiple bind"};
-			if (nbound++) return;
-			value = x;
-			traits::bind(value);
-		}
+			using tag = TAG;
+			using traits = bind_traits<tag>;
+			using value_type = typename traits::value_type;
 
-		~bind()
-		{
-			if (--nbound) return;
-			traits::unbind(value);
-		}
+			bind(value_type const& x)
+			{
+				if (nbound && value != x) throw violated{"multiple bind"};
+				if (nbound++) return;
+				value = x;
+				traits::bind(value);
+			}
 
-	private:
-		static thread_local std::size_t nbound;
-		static thread_local value_type value;
+			~bind()
+			{
+				if (--nbound) return;
+				traits::unbind(value);
+			}
 
-		struct violated : std::logic_error { using logic_error::logic_error; };
-	};
+		private:
+			static thread_local std::size_t nbound;
+			static thread_local value_type value;
 
-	template <class TAG>
-	thread_local std::size_t
-	bind<TAG>::nbound{};
+			struct violated : std::logic_error { using logic_error::logic_error; };
+		};
 
-	template <class TAG>
-	thread_local typename bind<TAG>::value_type
-	bind<TAG>::value;
+		template <class TAG>
+		thread_local std::size_t
+		bind<TAG>::nbound{};
+
+		template <class TAG>
+		thread_local typename bind<TAG>::value_type
+		bind<TAG>::value;
+	}
+
+	using meta::bind;
 }
 

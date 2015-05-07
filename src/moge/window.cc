@@ -61,17 +61,17 @@ namespace moge
 			glfwSwapInterval(static_cast<int>(on));
 		}
 	}
-}
 
-void meta::bind_traits<moge::window>::bind(value_type const& x)
-{
-	glfwMakeContextCurrent(x);
-};
+	void bind_traits<window>::bind(value_type const& x)
+	{
+		glfwMakeContextCurrent(x);
+	};
 
 #ifndef RELEASE
-void meta::bind_traits<moge::window>::unbind(value_type const&)
-{
-	glfwMakeContextCurrent({});
-};
+	void bind_traits<window>::unbind(value_type const&)
+	{
+		glfwMakeContextCurrent({});
+	};
 #endif
+}
 

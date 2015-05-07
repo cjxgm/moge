@@ -46,18 +46,18 @@ namespace moge
 	}
 
 	using window_detail::window;
-}
 
-template <>
-struct meta::bind_traits<moge::window>
-{
-	using value_type = moge::window_detail::glfw::window*;
-	static void bind(value_type const& x);
-	static void unbind(value_type const&)
+	template <>
+	struct bind_traits<window>
+	{
+		using value_type = window_detail::glfw::window*;
+		static void bind(value_type const& x);
+		static void unbind(value_type const&)
 #ifdef RELEASE
-	{}
+		{}
 #else
-	;
+		;
 #endif
-};
+	};
+}
 

@@ -1,8 +1,13 @@
 #pragma once
 
-namespace meta
+namespace moge
 {
-	template <class TAG>
-	struct bind_traits;
+	namespace meta
+	{
+		template <class TAG>
+		struct bind_traits;
+	}
+
+	using meta::bind_traits;
 }
 
