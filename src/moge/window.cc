@@ -13,6 +13,11 @@ namespace moge
 		{
 			auto make_window(char const* title, int w, int h)
 			{
+				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+				glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
+
 				auto win = glfwCreateWindow(w, h, title, {}, {});
 				if (!win) throw window_failure{"glfw-create-window"};
 				return win;
