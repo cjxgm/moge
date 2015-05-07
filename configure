@@ -1,0 +1,199 @@
+#!/usr/bin/perl -w
+# vim: noet ts=4 sw=4 sts=0 fenc=utf8
+# License: The MIT License with modification. See LICENSE for details.
+# (C) 2014-2015. Giumo Xavier Clanjor (哆啦比猫/兰威举) <cjxgm@126.com>
+
+
+
+
+my $CC = "clang++";
+my $CCFLAGS = "-std=gnu++14 -march=native -O3 -Wall -Wextra";
+my $LDFLAGS = "";
+my $name = "moge";
+my $dest = "build/$name";
+my $test = "LIBGL_SHOW_FPS=1 $dest";
+my @libs = qw(gl glfw3);
+my $ver  = `printf "r%s.%s" "\$(git rev-list --count HEAD)" "\$(git rev-parse --short HEAD)"`;
+
+
+
+
+
+my $COLOR_RST = "\e[0m";
+my $COLOR_CMD = "\e[0;32m";
+my $COLOR_VER = "\e[0;33m";
+my $COLOR_DIR = "\e[0;35m";
+my $COLOR_ERR = "\e[1;31m";
+my $COLOR_NAME = "\e[0;34m";
+my $COLOR_FILE = "\e[1;35m";
+
+
+my @dirs = qw(build);
+my %targets;
+
+
+sub configure
+{
+	print "${COLOR_CMD}configuring $COLOR_NAME$name $COLOR_VER$ver\n$COLOR_RST";
+	&gen_dep("src");
+	&write_makefile;
+}
+
+
+sub gen_dep
+{
+	my $dir = shift;
+	return if $dir =~ /build$/;
+	my $parent = shift || "..";
+
+	push @dirs, "build/$dir";
+	print "${COLOR_CMD}processing $COLOR_DIR$dir/\n$COLOR_RST";
+	&write_forwarding_makefile($dir, $parent);
+
+	for (<$dir/*.cc>) {
+		print "${COLOR_CMD}processing $COLOR_FILE$_\n$COLOR_ERR";
+		my $deps = `$CC $CCFLAGS -MM "$_"` or die $COLOR_RST;
+		print $COLOR_RST;
+		$deps =~ /^([^:]+):((.|\n)*)\n$/m or die;
+		my $target = $1;
+		my $dep = $2;
+		$targets{"build/$dir/$target"} = $dep;
+	}
+
+	for (<$dir/*/>) {
+		s|/$||;
+		&gen_dep($_, "$parent/..");
+	}
+}
+
+
+sub write_forwarding_makefile
+{
+	my ($dir, $parent) = @_;
+	open my $makefile, ">", "$dir/makefile" or die;
+	print $makefile <<EOF;
+# vim: noet ts=4 sw=4 sts=0 fenc=utf8
+# License: The MIT License with modification. See LICENSE for details.
+# (C) 2014-2015. Giumo Xavier Clanjor (哆啦比猫/兰威举) <cjxgm\@126.com>
+
+.PHONY: \${MAKECMDGOALS}
+
+all \$(filter-out all,\${MAKECMDGOALS}): .forward
+	@# no op
+
+.forward:
+	\@\${MAKE} --no-print-directory -C $parent \${MAKECMDGOALS} || true
+
+EOF
+	close $makefile
+}
+
+
+sub write_makefile
+{
+	open my $makefile, ">", "makefile" or die;
+	print $makefile <<EOF;
+# vim: noet ts=4 sw=4 sts=0 fenc=utf8
+# License: The MIT License with modification. See LICENSE for details.
+# (C) 2014-2015. Giumo Xavier Clanjor (哆啦比猫/兰威举) <cjxgm\@126.com>
+VERSION = $ver
+BUNDLE = $name-\$(VERSION)
+
+# compiler and flags
+CXX = $CC
+LD = \$(CXX)
+CCFLAGS = $CCFLAGS
+LDFLAGS = $LDFLAGS
+
+EOF
+	print $makefile "CCFLAGS += `pkg-config --cflags $_`\n" for @libs;
+	print $makefile "LDFLAGS += `pkg-config --libs   $_`\n" for @libs;
+	print $makefile <<EOF;
+
+
+# named colors
+COLOR_RST = $COLOR_RST
+COLOR_CMD = $COLOR_CMD
+COLOR_ARG = $COLOR_FILE
+
+
+# phonies
+.PHONY: all release clean cleanall rebuild reconf test bundle commit analyze trace diff log
+all: init app
+release: CCFLAGS += -DENGINE_NO_JOURNAL
+release: rebuild
+clean: makefile
+	\@echo "\$(COLOR_CMD)cleaning\$(COLOR_RST)"
+	rm -rf build
+	rm -f trace
+	rm -rf \$(BUNDLE)
+cleanall: clean
+	rm -f `find . -name 'makefile'`
+	rm -f $dest
+	rm -rf $name-*
+rebuild:
+	\$(MAKE) --no-print-directory clean
+	\$(MAKE) --no-print-directory all
+reconf:
+	\@echo "\$(COLOR_CMD)reconfiguring\$(COLOR_RST)"
+	./configure
+test: all
+	\@echo "\$(COLOR_CMD)testing" "\$(COLOR_ARG)$name\$(COLOR_RST)";
+	$test;
+commit: cleanall
+	git add .
+	git diff --cached
+	env LANG=C git commit -a || true
+	./configure
+bundle: release
+	\@echo "\$(COLOR_CMD)bundling" "\$(COLOR_ARG)$name\$(COLOR_RST)"
+	rm -rf \$(BUNDLE)
+	mkdir -p \$(BUNDLE)
+	cp -r configure makefile room.ed images/ src/ \$(BUNDLE)
+	cp -r $dest \$(BUNDLE)/\$(BUNDLE)
+	rm -f `find \$(BUNDLE) -name '.*'`
+	tar cvfJ \$(BUNDLE).tar.xz \$(BUNDLE)
+analyze: clean
+	\@echo "\$(COLOR_CMD)analyzing" "\$(COLOR_ARG)$name\$(COLOR_RST)"
+	scan-build -V --use-c++=$CC make
+trace: all
+	\@echo "\$(COLOR_CMD)tracing" "\$(COLOR_ARG)$name\$(COLOR_RST)"
+	apitrace trace -o trace timeout 10s $dest || true
+	qapitrace trace
+diff:
+	git diff --cached
+log:
+	git log --oneline --graph --decorate
+
+
+# build rules
+init: makefile build @dirs
+app: makefile $dest
+makefile: configure
+	\@echo "\$(COLOR_CMD)reconfiguring\$(COLOR_RST)"
+	./configure
+EOF
+	print $makefile <<EOF for @dirs;
+$_:
+	\@echo "\$(COLOR_CMD)making directory" "\$(COLOR_ARG)\$@\$(COLOR_RST)"
+	mkdir -p $_
+EOF
+	print $makefile <<EOF;
+build/%.o: %.cc
+	\@echo "\$(COLOR_CMD)compiling" "\$(COLOR_ARG)\$@\$(COLOR_RST)"
+	\$(CXX) -c -o \$@ \$< \$(CCFLAGS)
+$dest: @{[keys %targets]}
+	\@echo "\$(COLOR_CMD)linking" "\$(COLOR_ARG)\$@\$(COLOR_RST)"
+	\$(LD) -o \$@ \$^ \$(LDFLAGS)
+
+
+# dependencies
+EOF
+	print $makefile "$_:$targets{$_} makefile\n" for keys %targets;
+	print $makefile "\n";
+	close $makefile
+}
+
+
+&configure;
+
