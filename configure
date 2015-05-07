@@ -118,10 +118,10 @@ COLOR_ARG = $COLOR_FILE
 
 
 # phonies
-.PHONY: all release clean cleanall rebuild reconf test bundle commit analyze trace diff log
+.PHONY: all release-all clean cleanall rebuild release reconf test bundle commit analyze diff trace log
 all: init app
-release: CCFLAGS += -DENGINE_NO_JOURNAL
-release: rebuild
+release-all: CCFLAGS += -DRELEASE
+release-all: all
 clean: makefile
 	\@echo "\$(COLOR_CMD)cleaning\$(COLOR_RST)"
 	rm -rf build
@@ -134,12 +134,15 @@ cleanall: clean
 rebuild:
 	\$(MAKE) --no-print-directory clean
 	\$(MAKE) --no-print-directory all
+release:
+	\$(MAKE) --no-print-directory clean
+	\$(MAKE) --no-print-directory release-all
 reconf:
 	\@echo "\$(COLOR_CMD)reconfiguring\$(COLOR_RST)"
 	./configure
 test: all
-	\@echo "\$(COLOR_CMD)testing" "\$(COLOR_ARG)$name\$(COLOR_RST)";
-	$test;
+	\@echo "\$(COLOR_CMD)testing" "\$(COLOR_ARG)$name\$(COLOR_RST)"
+	$test
 commit: cleanall
 	git add .
 	git diff --cached

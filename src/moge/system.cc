@@ -23,19 +23,23 @@ namespace moge
 			glfwTerminate();
 		}
 
-		void system::run()
+		void system::run(system&)
 		{
-			instance();
 			while (!should_quit) {
-				glfwWaitEvents();	// TODO: poll
+				glfwWaitEvents();
 				// TODO: on_update event
 			}
 		}
 
-		void system::quit()
+		void system::quit(system& sys)
 		{
-			instance();
 			should_quit = true;
+			update(sys);
+		}
+
+		void system::update(system&)
+		{
+			glfwPostEmptyEvent();
 		}
 	}
 }

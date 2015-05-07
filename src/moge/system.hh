@@ -7,8 +7,9 @@ namespace moge
 	{
 		struct system : meta::singleton<system>
 		{
-			static void run();
-			static void quit();
+			static void run(system& = instance());
+			static void quit(system& = instance());
+			static void update(system& = instance());
 
 		private:
 			system();

@@ -3,6 +3,7 @@
 #include <string>
 #include <glm/vec2.hpp>
 #include "meta/bind-traits.hh"
+#include "system.hh"
 
 struct GLFWwindow;
 
@@ -28,7 +29,8 @@ namespace moge
 			window_events::uptr events;
 
 			window(std::string const& title={"moge"},
-					glm::ivec2 const& size ={16*60, 9*60});
+					glm::ivec2 const& size ={16*60, 9*60},
+					system& = system::instance());
 
 			void vsync(bool on=true);
 
@@ -47,6 +49,11 @@ struct meta::bind_traits<moge::window>
 {
 	using value_type = moge::window_detail::glfw::window*;
 	static void bind(value_type const& x);
-	static void unbind(value_type const&) {}
+	static void unbind(value_type const&)
+#ifdef RELEASE
+	{}
+#else
+	;
+#endif
 };
 
