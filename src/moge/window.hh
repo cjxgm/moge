@@ -37,6 +37,7 @@ namespace moge
 					system& = system::instance());
 
 			void vsync(bool on=true);
+			void update();
 
 			operator auto () const { return win.get(); }
 
@@ -49,15 +50,9 @@ namespace moge
 
 	template <>
 	struct bind_traits<window>
+		: make_bind_traits<window_detail::glfw::window*>
 	{
-		using value_type = window_detail::glfw::window*;
 		static void bind(value_type const& x);
-		static void unbind(value_type const&)
-#ifdef RELEASE
-		{}
-#else
-		;
-#endif
 	};
 }
 

@@ -1,11 +1,14 @@
 #include "system.hh"
 #include "exceptions.hh"
+#include "utils.hh"
 #include <GLFW/glfw3.h>
 
 namespace moge
 {
 	namespace system_detail
 	{
+		system_events system::events;
+
 		namespace
 		{
 			bool should_quit;
@@ -26,8 +29,10 @@ namespace moge
 		void system::run(system&)
 		{
 			while (!should_quit) {
-				glfwWaitEvents();
+				safe_call(system::events.render);
 				// TODO: on_update event
+				glfwWaitEvents();
+				//glfwPollEvents();
 			}
 		}
 

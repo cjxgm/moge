@@ -1,7 +1,6 @@
 #pragma once
 #include "bind-traits.hh"
 #include "constraints.hh"
-#include <utility>		// for std::move
 #include <stdexcept>
 #include <cstddef>		// for std::size_t
 
@@ -16,19 +15,21 @@ namespace moge
 			using traits = bind_traits<tag>;
 			using value_type = typename traits::value_type;
 
-			bind(value_type const& x)
+			static constexpr auto nil() { return traits::nil(); }
+
+			// TODO: split reference counting to a separate construct
+			bind(value_type const& x=nil())
 			{
-				if (nbound && value != x) throw violated{"multiple bind"};
-				if (nbound++) return;
+				if (value == x) goto count_reference;
+				if (nbound) throw violated{"multiple bind"};
 				value = x;
 				traits::bind(value);
+
+			count_reference:
+				nbound++;
 			}
 
-			~bind()
-			{
-				if (--nbound) return;
-				traits::unbind(value);
-			}
+			~bind() { --nbound; }
 
 		private:
 			static thread_local std::size_t nbound;

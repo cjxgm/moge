@@ -2,6 +2,7 @@
 #include "system.hh"
 #include "exceptions.hh"
 #include "meta/bind.hh"
+#include "utils.hh"
 #include <GLFW/glfw3.h>
 #include <utility>		// for std::forward
 
@@ -37,12 +38,6 @@ namespace moge
 				auto ev = reinterpret_cast<window_events*>(up);
 				return *ev;
 			}
-
-			template <class F, class ...ARGS>
-			void safe_call(F const& f, ARGS &&... args)
-			{
-				if (f) return f(std::forward<ARGS>(args)...);
-			}
 		}
 
 		window::window(std::string const& title,
@@ -65,18 +60,17 @@ namespace moge
 			meta::bind<window> _(*this);
 			glfwSwapInterval(static_cast<int>(on));
 		}
+
+		void window::update()
+		{
+			meta::bind<window> _(*this);
+			glfwSwapBuffers(win.get());
+		}
 	}
 
 	void bind_traits<window>::bind(value_type const& x)
 	{
 		glfwMakeContextCurrent(x);
 	};
-
-#ifndef RELEASE
-	void bind_traits<window>::unbind(value_type const&)
-	{
-		glfwMakeContextCurrent({});
-	};
-#endif
 }
 
