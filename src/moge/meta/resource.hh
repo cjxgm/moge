@@ -2,14 +2,12 @@
 #pragma once
 #include "resource-traits.hh"
 #include "constraints.hh"
-#include <utility>		// for std::move
+#include <utility>		// for std::move, std::swap
 
 namespace moge
 {
 	namespace meta
 	{
-		struct nil_resource {};
-
 		template <class TAG>
 		struct resource : only_movable
 		{
@@ -20,13 +18,16 @@ namespace moge
 			static constexpr auto nil() { return traits::nil(); }
 
 
-			//------ rule of three
-			resource() : value{traits::allocate()} {}
+			//------ life time
+			resource() : resource{traits::allocate()} {}
+			resource(value_type x) : value{std::move(x)} {}
 			resource(resource && x) : value{x.release()} {}
-
-			auto& operator = (resource && x) { reset(x.release()); return *this; }
-
 			~resource() { if (value != nil()) traits::deallocate(value); }
+
+
+			//------ assignments
+			auto& operator = (resource && x) { reset( x.release()); return *this; }
+			auto& operator = (value_type  x) { reset(std::move(x)); return *this; }
 
 
 			//------ accessors
@@ -36,20 +37,14 @@ namespace moge
 
 
 			//------ modifiers
-			void reset(value_type x=nil())
-			{
-				if (value != nil()) traits::deallocate(value);
-				value = std::move(x);
-			}
-
+			void swap(resource & x) { std::swap(value, x.value); }
+			void reset(value_type x=nil()) { swap({std::move(x)}); }
 			auto release()
 			{
 				auto x = std::move(value);
 				value = nil();
 				return x;
 			}
-
-			auto& operator = (value_type x) { reset(std::move(x)); return *this; }
 
 
 		private:
