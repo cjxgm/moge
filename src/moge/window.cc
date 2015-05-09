@@ -46,6 +46,7 @@ namespace moge
 			: events{std::make_unique<window_events>()}
 			, win{make_window(title, size)}
 		{
+			events->close = [] { system::quit(); };
 			glfwSetWindowUserPointer(win.get(), events.get());
 
 			// event dispatching

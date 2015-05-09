@@ -8,7 +8,6 @@ using namespace moge;
 int main()
 {
 	window win1{"hello world"};
-	win1.events->close = [] { system::quit(); };
 
 	optional<window> win2;
 	win2 = window{"window 2", {320, 240}};

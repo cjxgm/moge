@@ -24,5 +24,6 @@ namespace moge
 	}
 
 	using meta::bind_traits;
+	using meta::make_bind_traits;
 }
 
