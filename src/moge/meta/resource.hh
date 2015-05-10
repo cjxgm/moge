@@ -19,10 +19,10 @@ namespace moge
 
 
 			//------ life time
-			resource() : resource{allocate()} {}
+			resource() : resource{traits::allocate()} {}
 			resource(value_type x) : value{std::move(x)} {}
 			resource(resource && x) : value{x.release()} {}
-			~resource() { if (value != nil()) deallocate(value); }
+			~resource() { if (value != nil()) traits::deallocate(value); }
 
 
 			//------ assignments
@@ -50,9 +50,6 @@ namespace moge
 
 		private:
 			value_type value;
-
-			static auto allocate() { return traits::allocate(); }
-			static void deallocate(value_type const& x) { return traits::deallocate(x); }
 		};
 	}
 

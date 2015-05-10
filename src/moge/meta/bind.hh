@@ -1,5 +1,5 @@
 #pragma once
-#include "bind-traits.hh"
+#include "resource-traits.hh"
 #include "constraints.hh"
 #include <stdexcept>
 #include <cstddef>		// for std::size_t
@@ -12,7 +12,7 @@ namespace moge
 		struct bind : non_transferable
 		{
 			using tag = TAG;
-			using traits = bind_traits<tag>;
+			using traits = resource_traits<tag>;
 			using value_type = typename traits::value_type;
 
 			static constexpr auto nil() { return traits::nil(); }
