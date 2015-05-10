@@ -39,10 +39,10 @@ namespace moge
 			, events{std::make_unique<window_events>()}
 		{
 			events->close = [] { system::quit(); };
-			glfwSetWindowUserPointer(get(), events.get());
+			glfwSetWindowUserPointer(*this, events.get());
 
 			// event dispatching
-			glfwSetWindowCloseCallback(get(), [](auto win) {
+			glfwSetWindowCloseCallback(*this, [](auto win) {
 				glfwSetWindowShouldClose(win, false);
 				safe_call(events_from_window(win).close);
 			});
@@ -57,22 +57,19 @@ namespace moge
 		void window::update()
 		{
 			meta::bind<window> _(*this);
-			glfwSwapBuffers(get());
+			glfwSwapBuffers(*this);
 		}
 	}
 
-	void resource_traits<window>::bind(value_type const& x)
-	{
-		glfwMakeContextCurrent(x);
-	};
-
-//	auto resource_traits<window>::allocate() -> value_type
-//	{
-//	};
 
 	void resource_traits<window>::deallocate(value_type const& x)
 	{
 		glfwDestroyWindow(x);
+	};
+
+	void resource_traits<window>::bind(value_type const& x)
+	{
+		glfwMakeContextCurrent(x);
 	};
 }
 
