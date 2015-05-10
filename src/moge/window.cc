@@ -12,27 +12,19 @@ namespace moge
 	{
 		namespace
 		{
-			auto make_window(char const* title, int w, int h)
+			auto make_window(std::string const& title, glm::ivec2 const& size)
 			{
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 				glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 
-				auto win = glfwCreateWindow(w, h, title, {}, {});
+				auto win = glfwCreateWindow(size.x, size.y, title.c_str(), {}, {});
 				if (!win) throw window_failure{"glfw-create-window"};
 				return win;
 			}
 
-			auto make_window(std::string const& title, glm::ivec2 const& size)
-			{
-				return glfw::window_uptr{
-					make_window(title.c_str(), size.x, size.y),
-					&glfwDestroyWindow
-				};
-			}
-
-			auto& events_from_window(glfw::window* win)
+			auto& events_from_window(GLFWwindow* win)
 			{
 				auto up = glfwGetWindowUserPointer(win);
 				auto ev = reinterpret_cast<window_events*>(up);
@@ -43,14 +35,14 @@ namespace moge
 		window::window(std::string const& title,
 				glm::ivec2 const& size,
 				system&)
-			: events{std::make_unique<window_events>()}
-			, win{make_window(title, size)}
+			: resource{make_window(title, size)}
+			, events{std::make_unique<window_events>()}
 		{
 			events->close = [] { system::quit(); };
-			glfwSetWindowUserPointer(win.get(), events.get());
+			glfwSetWindowUserPointer(get(), events.get());
 
 			// event dispatching
-			glfwSetWindowCloseCallback(win.get(), [](auto win) {
+			glfwSetWindowCloseCallback(get(), [](auto win) {
 				glfwSetWindowShouldClose(win, false);
 				safe_call(events_from_window(win).close);
 			});
@@ -65,13 +57,22 @@ namespace moge
 		void window::update()
 		{
 			meta::bind<window> _(*this);
-			glfwSwapBuffers(win.get());
+			glfwSwapBuffers(get());
 		}
 	}
 
-	void bind_traits<window>::bind(value_type const& x)
+	void resource_traits<window>::bind(value_type const& x)
 	{
 		glfwMakeContextCurrent(x);
+	};
+
+//	auto resource_traits<window>::allocate() -> value_type
+//	{
+//	};
+
+	void resource_traits<window>::deallocate(value_type const& x)
+	{
+		glfwDestroyWindow(x);
 	};
 }
 

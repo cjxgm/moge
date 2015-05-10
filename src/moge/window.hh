@@ -3,7 +3,8 @@
 #include <string>
 #include <glm/vec2.hpp>
 #include <functional>
-#include "meta/bind-traits.hh"
+#include "meta/resource-traits.hh"
+#include "meta/resource.hh"
 #include "system.hh"
 
 struct GLFWwindow;
@@ -12,13 +13,23 @@ namespace moge
 {
 	namespace window_detail
 	{
-		namespace glfw
-		{
-			using window = GLFWwindow;
-			using window_deleter = void (window *);
-			using window_uptr = std::unique_ptr<window, window_deleter*>;
-		}
+		struct window;
+	}
 
+	using window_detail::window;
+
+
+	template <>
+	struct resource_traits<window> : make_resource_traits<GLFWwindow*>
+	{
+		// static value_type allocate();
+		static void deallocate(value_type const& x);
+		static void bind(value_type const& x);
+	};
+
+
+	namespace window_detail
+	{
 		struct window_events
 		{
 			using self = window_events;
@@ -28,7 +39,7 @@ namespace moge
 			close_func close;
 		};
 
-		struct window
+		struct window : resource<window>
 		{
 			window_events::uptr events;
 
@@ -38,21 +49,7 @@ namespace moge
 
 			void vsync(bool on=true);
 			void update();
-
-			operator auto () const { return win.get(); }
-
-		private:
-			glfw::window_uptr win;
 		};
 	}
-
-	using window_detail::window;
-
-	template <>
-	struct bind_traits<window>
-		: make_bind_traits<window_detail::glfw::window*>
-	{
-		static void bind(value_type const& x);
-	};
 }
 
