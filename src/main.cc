@@ -3,7 +3,11 @@
 #include "moge/meta/optional.hh"
 #include "moge/meta/bind.hh"
 #include "moge/misc.hh"
+#include "moge/steady-updater.hh"
 using namespace moge;
+
+#include <iostream>
+using std::cerr;
 
 int main()
 {
@@ -13,7 +17,13 @@ int main()
 	win2 = window{"window 2", {320, 240}};
 	win2->events->close = [&] { win2 = {}; };
 
-	system::events.render = [&] {
+	auto& sys = system::instance();
+	steady_updater<30> sup;
+	while (sys.poll()) {
+		cerr << "frame\n";
+		sup();
+		while (sup) cerr << "update\n";
+
 		{
 			bind<window> _(win1);
 			moge::clear_color({1, 1, 1, 1});
@@ -28,8 +38,6 @@ int main()
 			moge::clear(moge::clear_mask::color);
 			win.update();
 		}
-	};
-
-	system::run();
+	}
 }
 

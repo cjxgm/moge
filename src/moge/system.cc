@@ -7,16 +7,13 @@ namespace moge
 {
 	namespace system_detail
 	{
-		system_events system::events;
-
 		namespace
 		{
-			bool should_quit;
+			bool should_continue{true};
 		}
 
 		system::system()
 		{
-			should_quit = false;
 			glfwSetErrorCallback([](auto, auto msg) { throw system_failure{msg}; });
 			if (!glfwInit()) throw system_failure{"glfw-init"};
 		}
@@ -26,23 +23,25 @@ namespace moge
 			glfwTerminate();
 		}
 
-		void system::run(system&)
+		bool system::wait()
 		{
-			while (!should_quit) {
-				safe_call(system::events.render);
-				// TODO: on_update event
-				glfwWaitEvents();
-				//glfwPollEvents();
-			}
+			glfwWaitEvents();
+			return should_continue;
 		}
 
-		void system::quit(system& sys)
+		bool system::poll()
 		{
-			should_quit = true;
-			update(sys);
+			glfwPollEvents();
+			return should_continue;
 		}
 
-		void system::update(system&)
+		void system::quit()
+		{
+			should_continue = false;
+			update();
+		}
+
+		void system::update()
 		{
 			glfwPostEmptyEvent();
 		}

@@ -34,11 +34,11 @@ namespace moge
 
 		window::window(std::string const& title,
 				glm::ivec2 const& size,
-				system&)
+				system& sys)
 			: resource{make_window(title, size)}
 			, events{std::make_unique<window_events>()}
 		{
-			events->close = [] { system::quit(); };
+			events->close = [&] { sys.quit(); };
 			glfwSetWindowUserPointer(*this, events.get());
 
 			// event dispatching
