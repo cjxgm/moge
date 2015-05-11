@@ -2,7 +2,7 @@
 #include "moge/window.hh"
 #include "moge/meta/optional.hh"
 #include "moge/meta/bind.hh"
-#include "moge/gl.hh"
+#include "moge/misc.hh"
 using namespace moge;
 
 int main()
@@ -16,16 +16,16 @@ int main()
 	system::events.render = [&] {
 		{
 			bind<window> _(win1);
-			glClearColor(1, 1, 1, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			moge::clear_color({1, 1, 1, 1});
+			moge::clear(moge::clear_mask::color);
 			win1.update();
 		}
 
 		if (win2) {
 			auto& win = *win2;
 			bind<window> _(win);
-			glClearColor(1, 0, 0, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			moge::clear_color({1, 0, 0, 1});
+			moge::clear(moge::clear_mask::color);
 			win.update();
 		}
 	};
