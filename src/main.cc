@@ -5,6 +5,7 @@
 #include "moge/misc.hh"
 #include "moge/steady-updater.hh"
 #include "moge/shader.hh"
+#include "moge/program.hh"
 using namespace moge;
 
 #include <iostream>
@@ -17,10 +18,19 @@ int main()
 		bind<window> _{win1};
 		vertex_shader vs{R"glsl(
 			#version 330 core
+			out vec2 hello;
 			void main()
 			{
 			}
 		)glsl"};
+		fragment_shader fs{R"glsl(
+			#version 330 core
+			in vec3 hello;
+			void main()
+			{
+			}
+		)glsl"};
+		program p{vs, fs};
 	}
 
 	optional<window> win2;

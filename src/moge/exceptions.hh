@@ -9,6 +9,7 @@ namespace moge
 		struct system_failure : fatal_error { using fatal_error::fatal_error; };
 		struct window_failure : fatal_error { using fatal_error::fatal_error; };
 		struct shader_failure : fatal_error { using fatal_error::fatal_error; };
+		struct program_failure: fatal_error { using fatal_error::fatal_error; };
 	}
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>		// for std::forward
+#include <string>
 
 namespace moge
 {
@@ -10,8 +11,11 @@ namespace moge
 		{
 			if (f) f(std::forward<ARGS>(args)...);
 		}
+
+		std::string load_file(std::string const& path);
 	}
 
 	using utils::safe_call;
+	using utils::load_file;
 }
 
