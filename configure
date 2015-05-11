@@ -170,7 +170,7 @@ log:
 
 
 # build rules
-init: makefile build @dirs
+init: makefile @dirs
 app: makefile $dest
 makefile: configure
 	\@echo "\$(COLOR_CMD)reconfiguring\$(COLOR_RST)"
