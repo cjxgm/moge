@@ -52,12 +52,12 @@ namespace moge
 		private:
 			value_type value;
 
-			struct exausted : std::runtime_error { using runtime_error::runtime_error; };
+			struct exhausted : std::runtime_error { using runtime_error::runtime_error; };
 
 			static auto allocate()
 			{
 				auto x = traits::allocate();
-				if (x == nil()) throw exausted{"resource allocation failure"};
+				if (x == nil()) throw exhausted{"resource allocation failure"};
 				return x;
 			}
 		};
