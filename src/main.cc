@@ -24,7 +24,7 @@ namespace
 
 int main()
 {
-	window win1{"hello world"};
+	window win1;
 
 	optional<window> win2;
 	win2 = window{"window 2", {320, 240}};
@@ -38,8 +38,8 @@ int main()
 		{
 			bind<window> _(win1);
 			bind<program> __(p1);
-			moge::clear_color({1, 1, 1, 1});
-			moge::clear(moge::clear_mask::color);
+			clear_color({1, 1, 1, 1});
+			clear(clear_target::color_buffer);
 			win1.update();
 		}
 
@@ -47,8 +47,8 @@ int main()
 			auto& win = *win2;
 			bind<window> _(win);
 			bind<program> __(p2);
-			moge::clear_color({1, 0, 0, 1});
-			moge::clear(moge::clear_mask::color);
+			clear_color({1, 0, 0, 1});
+			clear(clear_target::color_buffer);
 			win.update();
 		}
 	}
