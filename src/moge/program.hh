@@ -20,6 +20,7 @@ namespace moge
 	{
 		static auto allocate() { return glCreateProgram(); }
 		static void deallocate(value_type const& x) { glDeleteProgram(x); }
+		static void bind(value_type const& x) { glUseProgram(x); }
 	};
 
 
