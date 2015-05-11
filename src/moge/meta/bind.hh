@@ -9,7 +9,7 @@ namespace moge
 	namespace meta
 	{
 		template <class TAG>
-		struct bind : non_transferable
+		struct bind : only_movable
 		{
 			using tag = TAG;
 			using traits = resource_traits<tag>;
@@ -28,6 +28,9 @@ namespace moge
 			count_reference:
 				nbound++;
 			}
+
+			bind(bind &&) { nbound++; }
+			bind& operator = (bind &&) { nbound++; return *this; }
 
 			~bind() { --nbound; }
 

@@ -13,7 +13,7 @@ namespace
 {
 	auto load_program(window const& win)
 	{
-		bind<window> _{win};
+		auto _ = win.bind();
 		return program{
 			vertex_shader{load_file("shader/main/vertex")},
 			geometry_shader{load_file("shader/main/geometry")},
@@ -36,8 +36,8 @@ int main()
 	auto& sys = system::instance();
 	while (sys.poll()) {
 		{
-			bind<window> _(win1);
-			bind<program> __(p1);
+			auto w_ = win1.bind();
+			auto p_ = p1.bind();
 			clear_color({1, 1, 1, 1});
 			clear(clear_target::color_buffer);
 			win1.update();
@@ -45,8 +45,8 @@ int main()
 
 		if (win2) {
 			auto& win = *win2;
-			bind<window> _(win);
-			bind<program> __(p2);
+			auto w_ = win.bind();
+			auto p_ = p2.bind();
 			clear_color({1, 0, 0, 1});
 			clear(clear_target::color_buffer);
 			win.update();

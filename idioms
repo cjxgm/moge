@@ -1,0 +1,10 @@
+
+bind
+===========
+bind<resource_type>{resource};			// bind
+bind<resource_type> _{resource};		// bind and mutually-exclusively lock
+bind<resource_type>{};					// bind to nil
+bind<resource_type> _{};				// bind to nil and mutually-exclusively lock
+resource.bind();						// bind (shortcut)
+auto _ = resource.bind();				// bind and mutually-exclusively lock (shortcut)
+

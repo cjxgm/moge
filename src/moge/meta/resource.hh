@@ -2,6 +2,7 @@
 #pragma once
 #include "resource-traits.hh"
 #include "constraints.hh"
+#include "bind.hh"
 #include <utility>		// for std::move, std::swap
 #include <stdexcept>
 
@@ -47,6 +48,7 @@ namespace moge
 				value = nil();
 				return x;
 			}
+			auto bind() const { return meta::bind<tag>{*this}; }
 
 
 		private:
