@@ -1,0 +1,7 @@
+// vim: ft=glsl noet ts=4 sw=4 sts=0
+#version 330
+
+void main()
+{
+}
+

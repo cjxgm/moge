@@ -1,0 +1,24 @@
+// vim: ft=glsl noet ts=4 sw=4 sts=0
+#version 330
+layout(points) in;
+layout(triangle_strip, max_vertices=3) out;
+
+#define pos_in			gl_in[0].gl_Position
+#define pos_out			gl_Position
+#define vertex			EmitVertex
+#define primitive		EndPrimitive
+
+void main()
+{
+	pos_out = pos_in + vec4(-1, -1, 0, 0)*0.1;
+	vertex();
+
+	pos_out = pos_in + vec4(+1, -1, 0, 0)*0.1;
+	vertex();
+
+	pos_out = pos_in + vec4( 0, +1, 0, 0)*0.1;
+	vertex();
+
+	primitive();
+}
+
