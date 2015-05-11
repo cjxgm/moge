@@ -4,6 +4,7 @@
 #include "moge/meta/bind.hh"
 #include "moge/misc.hh"
 #include "moge/steady-updater.hh"
+#include "moge/shader.hh"
 using namespace moge;
 
 #include <iostream>
@@ -12,6 +13,15 @@ using std::cerr;
 int main()
 {
 	window win1{"hello world"};
+	{
+		bind<window> _{win1};
+		vertex_shader vs{R"glsl(
+			#version 330 core
+			void main()
+			{
+			}
+		)glsl"};
+	}
 
 	optional<window> win2;
 	win2 = window{"window 2", {320, 240}};

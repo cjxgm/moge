@@ -3,6 +3,7 @@
 #include "resource-traits.hh"
 #include "constraints.hh"
 #include <utility>		// for std::move, std::swap
+#include <stdexcept>
 
 namespace moge
 {
@@ -19,7 +20,7 @@ namespace moge
 
 
 			//------ life time
-			resource() : resource{traits::allocate()} {}
+			resource() : resource{allocate()} {}
 			resource(value_type x) : value{std::move(x)} {}
 			resource(resource && x) : value{x.release()} {}
 			~resource() { if (value != nil()) traits::deallocate(value); }
@@ -50,6 +51,15 @@ namespace moge
 
 		private:
 			value_type value;
+
+			struct exausted : std::runtime_error { using runtime_error::runtime_error; };
+
+			static auto allocate()
+			{
+				auto x = traits::allocate();
+				if (x == nil()) throw exausted{"resource allocation failure"};
+				return x;
+			}
 		};
 	}
 
