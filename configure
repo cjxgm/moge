@@ -66,6 +66,15 @@ sub gen_dep
 	}
 }
 
+sub pkg_config
+{
+	my $args = shift;
+	my $result = `pkg-config $args`;
+	$result =~ s/\n+/ /g;
+	$result =~ s/\s+$//g;
+	$result;
+}
+
 
 sub write_forwarding_makefile
 {
@@ -88,7 +97,6 @@ EOF
 	close $makefile
 }
 
-
 sub write_makefile
 {
 	open my $makefile, ">", "makefile" or die;
@@ -106,8 +114,8 @@ CCFLAGS = $CCFLAGS
 LDFLAGS = $LDFLAGS
 
 EOF
-	print $makefile "CCFLAGS += `pkg-config --cflags $_`\n" for @libs;
-	print $makefile "LDFLAGS += `pkg-config --libs   $_`\n" for @libs;
+	print $makefile "CCFLAGS += " . &pkg_config("--cflags $_") . "\n" for @libs;
+	print $makefile "LDFLAGS += " . &pkg_config("--libs   $_") . "\n" for @libs;
 	print $makefile <<EOF;
 
 
