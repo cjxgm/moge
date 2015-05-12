@@ -9,6 +9,9 @@
 #include "moge/utils.hh"
 #include "moge/vertex_array.hh"
 #include "moge/buffer.hh"
+#include <array>
+#include <type_traits>
+#include <utility>		// for std::forward
 using namespace moge;
 
 namespace
