@@ -22,52 +22,66 @@ namespace
 			fragment_shader{load_file("shader/main/fragment")},
 		};
 	}
+
+	auto load_buffer(window const& win)
+	{
+		auto _ = win.bind();
+		array_buffer buf;
+		buf.bind();
+		static float const points[] = {
+			-0.5, -0.5,
+			+0.3, +0.4,
+		};
+		buf.data(buffer_usage::static_draw, points, sizeof(points));
+		return buf;
+	}
+
+	auto load_array(window const& win)
+	{
+		auto _ = win.bind();
+		vertex_array arr;
+		arr.bind();
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+		return arr;
+	}
 }
 
 int main()
 {
 	window win1;
 	win1.bind();
-
-	array_buffer buf;
-	buf.bind();
-	float points[] = {
-		-0.5, -0.5,
-		+0.3, +0.4,
-	};
-	buf.data(buffer_usage::static_draw, points, sizeof(points));
-
-	vertex_array arr;
-	arr.bind();
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
-
-	auto p1 = load_program(win1);
+	auto buf1 = load_buffer (win1);
+	auto arr1 = load_array  (win1);
+	auto pro1 = load_program(win1);
+	pro1.bind();
 
 	optional<window> win2;
 	win2 = window{"window 2", {320, 240}};
 	win2->events->close = [&] { win2 = {}; };
 
-	auto p2 = load_program(*win2);
+	win2->bind();
+	auto buf2 = load_buffer (*win2);
+	auto arr2 = load_array  (*win2);
+	auto pro2 = load_program(*win2);
+	pro2.bind();
 
 	auto& sys = system::instance();
 	while (sys.poll()) {
 		{
-			auto w_ = win1.bind();
-			auto p_ = p1.bind();
+			win1.bind();
 			clear_color({1, 1, 1, 1});
 			clear(clear_target::color_buffer);
-			arr.draw_point(2);
+			arr1.draw_point(2);
 			win1.update();
 		}
 
 		if (win2) {
-			auto& win = *win2;
-			auto w_ = win.bind();
-			auto p_ = p2.bind();
+			win2->bind();
 			clear_color({1, 0, 0, 1});
 			clear(clear_target::color_buffer);
-			win.update();
+			arr2.draw_point(2);
+			win2->update();
 		}
 	}
 }

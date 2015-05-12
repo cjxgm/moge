@@ -3,6 +3,7 @@
 #include "exceptions.hh"
 #include "meta/bind.hh"
 #include "utils.hh"
+#include "misc.hh"
 #include <GLFW/glfw3.h>
 #include <utility>		// for std::forward
 
@@ -33,7 +34,7 @@ namespace moge
 		}
 
 		window::window(std::string const& title,
-				glm::ivec2 const& size,
+				glm::vec2 const& size,
 				system& sys)
 			: resource{make_window(title, size)}
 			, events{std::make_unique<window_events>()}
@@ -45,6 +46,14 @@ namespace moge
 			glfwSetWindowCloseCallback(*this, [](auto win) {
 				glfwSetWindowShouldClose(win, false);
 				safe_call(events_from_window(win).close);
+			});
+			glfwSetWindowSizeCallback(*this, [](auto win, auto w, auto h) {
+				auto& resize = events_from_window(win).resize;
+				if (resize) resize({w, h});
+				else {
+					meta::bind<window> _{win};
+					viewport({w, h});
+				}
 			});
 		}
 

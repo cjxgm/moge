@@ -2,6 +2,7 @@
 #include "gl.hh"
 #include "meta/bitmask.hh"
 #include <glm/vec4.hpp>
+#include <glm/vec2.hpp>
 
 namespace moge
 {
@@ -15,12 +16,16 @@ namespace moge
 			constexpr type depth_buffer{GL_DEPTH_BUFFER_BIT};
 		}
 
-		void clear_color(glm::vec4 const& color) { glClearColor(color.r, color.g, color.b, color.a); }
-		void clear(clear_target::type m) { glClear(m.get()); }
+		inline void clear_color(glm::vec4 const& color) { glClearColor(color.r, color.g, color.b, color.a); }
+		inline void clear(clear_target::type m) { glClear(m.get()); }
+
+		inline void viewport(glm::vec4 const& region) { glViewport(region.x, region.y, region.z, region.w); }
+		inline void viewport(glm::vec2 const& size) { viewport({0, 0, size.x, size.y}); }
 	}
 
 	namespace clear_target = misc_detail::clear_target;
 	using misc_detail::clear_color;
 	using misc_detail::clear;
+	using misc_detail::viewport;
 }
 

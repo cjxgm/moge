@@ -32,13 +32,15 @@ namespace moge
 		struct window_events
 		{
 			using close_func = std::function<void ()>;
+			using resize_func = std::function<void (glm::vec2 size)>;
 			close_func close;
+			resize_func resize;
 		};
 
 		struct window : resource<window>
 		{
 			window(std::string const& title={"moge"},
-					glm::ivec2 const& size ={16*60, 9*60},
+					glm::vec2 const& size ={16*60, 9*60},
 					system& = system::instance());
 
 			void vsync(bool on=true);

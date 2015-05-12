@@ -1,7 +1,9 @@
 // vim: ft=glsl noet ts=4 sw=4 sts=0
 #version 330
+in vec2 vpos;
 
 void main()
 {
+	gl_Position = vec4(vpos, 0, 1);
 }
 
