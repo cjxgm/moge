@@ -50,7 +50,6 @@ namespace
 int main()
 {
 	window win1;
-	win1.bind();
 	auto buf1 = load_buffer (win1);
 	auto arr1 = load_array  (win1);
 	auto pro1 = load_program(win1);
@@ -60,7 +59,6 @@ int main()
 	win2 = window{"window 2", {320, 240}};
 	win2->events->close = [&] { win2 = {}; };
 
-	win2->bind();
 	auto buf2 = load_buffer (*win2);
 	auto arr2 = load_array  (*win2);
 	auto pro2 = load_program(*win2);
@@ -69,7 +67,7 @@ int main()
 	auto& sys = system::instance();
 	while (sys.poll()) {
 		{
-			win1.bind();
+			auto _ = win1.bind();
 			clear_color({1, 1, 1, 1});
 			clear(clear_target::color_buffer);
 			arr1.draw_point(2);
@@ -77,7 +75,7 @@ int main()
 		}
 
 		if (win2) {
-			win2->bind();
+			auto _ = win2->bind();
 			clear_color({1, 0, 0, 1});
 			clear(clear_target::color_buffer);
 			arr2.draw_point(2);
