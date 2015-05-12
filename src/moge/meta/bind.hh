@@ -22,7 +22,7 @@ namespace moge
 			{
 				if (traits::bound() == x) goto count_reference;
 				if (nbound) throw violated{"multiple bind"};
-				traits::bind(value);
+				traits::bind(x);
 
 			count_reference:
 				nbound++;
@@ -35,18 +35,12 @@ namespace moge
 
 		private:
 			static thread_local std::size_t nbound;
-			static thread_local value_type value;
 
 			struct violated : std::logic_error { using logic_error::logic_error; };
 		};
 
 		template <class TAG>
-		thread_local std::size_t
-		bind<TAG>::nbound{};
-
-		template <class TAG>
-		thread_local typename bind<TAG>::value_type
-		bind<TAG>::value;
+		thread_local std::size_t bind<TAG>::nbound{};
 	}
 
 	using meta::bind;

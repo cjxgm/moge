@@ -61,9 +61,6 @@ int main()
 	win2->events->close = [&] { win2 = {}; };
 
 	win2->bind();
-	bind<array_buffer>{};
-	bind<vertex_array>{};
-	bind<program>{};
 	auto buf2 = load_buffer (*win2);
 	auto arr2 = load_array  (*win2);
 	auto pro2 = load_program(*win2);
