@@ -79,6 +79,11 @@ namespace moge
 	void resource_traits<window>::bind(value_type const& x)
 	{
 		glfwMakeContextCurrent(x);
-	};
+	}
+
+	auto resource_traits<window>::bound() -> value_type
+	{
+		return glfwGetCurrentContext();
+	}
 }
 

@@ -20,9 +20,8 @@ namespace moge
 			// TODO: split reference counting to a separate construct
 			bind(value_type const& x=nil())
 			{
-				if (value == x) goto count_reference;
+				if (traits::bound() == x) goto count_reference;
 				if (nbound) throw violated{"multiple bind"};
-				value = x;
 				traits::bind(value);
 
 			count_reference:

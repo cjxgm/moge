@@ -19,6 +19,12 @@ namespace moge
 		static auto allocate() { value_type x; glGenVertexArrays(1, &x); return x; }
 		static void deallocate(value_type const& x) { glDeleteVertexArrays(1, &x); }
 		static void bind(value_type const& x) { glBindVertexArray(x); }
+		static auto bound()
+		{
+			value_type x;
+			glGetIntegerv(GL_VERTEX_ARRAY_BINDING, reinterpret_cast<int*>(&x));
+			return x;
+		}
 	};
 
 

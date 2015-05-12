@@ -24,6 +24,7 @@ namespace moge
 	{
 		static void deallocate(value_type const& x);
 		static void bind(value_type const& x);
+		static value_type bound();
 	};
 
 

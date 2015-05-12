@@ -21,6 +21,12 @@ namespace moge
 		static auto allocate() { return glCreateProgram(); }
 		static void deallocate(value_type const& x) { glDeleteProgram(x); }
 		static void bind(value_type const& x) { glUseProgram(x); }
+		static auto bound()
+		{
+			value_type x;
+			glGetIntegerv(GL_CURRENT_PROGRAM, reinterpret_cast<int*>(&x));
+			return x;
+		}
 	};
 
 
