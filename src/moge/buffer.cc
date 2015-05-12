@@ -7,7 +7,7 @@ namespace moge
 		template <GLenum TARGET>
 		void buffer<TARGET>::data(buffer_usage u, void const* data, GLsizeiptr size)
 		{
-			auto _ = this->bind();
+			this->bind();
 			glBufferData(TARGET, size, data, static_cast<GLenum>(u));
 		}
 

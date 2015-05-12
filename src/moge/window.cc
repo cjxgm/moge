@@ -59,13 +59,13 @@ namespace moge
 
 		void window::vsync(bool on)
 		{
-			meta::bind<window> _(*this);
+			bind();
 			glfwSwapInterval(static_cast<int>(on));
 		}
 
 		void window::update()
 		{
-			meta::bind<window> _(*this);
+			bind();
 			glfwSwapBuffers(*this);
 		}
 	}
