@@ -12,10 +12,10 @@ namespace moge
 		constexpr auto stride = sizeof(std::tuple<TS...>);
 
 		template <
-			class U,
 			std::size_t I,
 			GLsizei STRIDE,
-			std::size_t OFFSET
+			std::size_t OFFSET,
+			class U
 		>
 		void vertex_layout()
 		{
@@ -29,16 +29,16 @@ namespace moge
 		}
 
 		template <
-			class U,
-			class T, class ...TS,
 			std::size_t I,
 			GLsizei STRIDE,
-			std::size_t OFFSET
+			std::size_t OFFSET,
+			class U,
+			class T, class ...TS
 		>
 		void vertex_layout()
 		{
-			vertex_layout<U, I, STRIDE, OFFSET>;
-			vertex_layout<T, TS..., I+1, STRIDE, OFFSET+sizeof(U)>;
+			vertex_layout<I, STRIDE, OFFSET, U>();
+			vertex_layout<I+1, STRIDE, OFFSET+sizeof(U), T, TS...>();
 		}
 	}
 
@@ -46,7 +46,7 @@ namespace moge
 	void vertex_layout()
 	{
 		constexpr auto stride = vertex_layout_detail::stride<TS...>;
-		vertex_layout_detail::vertex_layout<TS..., I, stride, 0>();
+		vertex_layout_detail::vertex_layout<I, stride, 0, TS...>();
 	}
 }
 

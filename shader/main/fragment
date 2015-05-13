@@ -1,9 +1,10 @@
 // vim: ft=glsl noet ts=4 sw=4 sts=0
 #version 330
+in vec4 fcolor;
 out vec4 color;
 
 void main()
 {
-	color = vec4(0, 1, 0, 1);
+	color = fcolor;
 }
 

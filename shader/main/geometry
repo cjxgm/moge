@@ -2,6 +2,8 @@
 #version 330
 layout(points) in;
 layout(triangle_strip, max_vertices=3) out;
+in vec4 gcolor[];
+out vec4 fcolor;
 
 #define pos_in			gl_in[0].gl_Position
 #define pos_out			gl_Position
@@ -11,12 +13,15 @@ layout(triangle_strip, max_vertices=3) out;
 void main()
 {
 	pos_out = pos_in + vec4(-1, -1, 0, 0)*0.1;
+	fcolor = gcolor[0];
 	vertex();
 
 	pos_out = pos_in + vec4(+1, -1, 0, 0)*0.1;
+	fcolor = gcolor[0];
 	vertex();
 
 	pos_out = pos_in + vec4( 0, +1, 0, 0)*0.1;
+	fcolor = gcolor[0];
 	vertex();
 
 	primitive();

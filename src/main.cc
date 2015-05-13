@@ -10,6 +10,8 @@
 #include "moge/vertex-array.hh"
 #include "moge/vertex-layout.hh"
 #include "moge/buffer.hh"
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <array>
 #include <type_traits>
 #include <utility>		// for std::forward
@@ -27,15 +29,30 @@ namespace
 		};
 	}
 
+	struct vertex
+	{
+		glm::vec2 pos;
+		glm::vec3 color;
+		static void layout()
+		{
+			vertex_layout<
+				glm::vec2,
+				glm::vec3
+			>();
+		}
+	};
+
+	vertex const points[] = {
+		{{ -0.5, -0.5 }, { 0, 1, 0 }},
+		{{ +0.3, +0.4 }, { 0, 0, 1 }},
+	};
+	constexpr auto npoint = sizeof(points)/sizeof(points[0]);
+
 	auto load_buffer(window const& win)
 	{
 		auto _ = win.bind();
 		array_buffer buf;
 		buf.bind();
-		static glm::vec2 const points[] = {
-			{ -0.5, -0.5 },
-			{ +0.3, +0.4 },
-		};
 		buf.data(buffer_usage::static_draw, points, sizeof(points));
 		return buf;
 	}
@@ -45,7 +62,7 @@ namespace
 		auto _ = win.bind();
 		vertex_array arr;
 		arr.bind();
-		vertex_layout<glm::vec2>();
+		vertex::layout();
 		return arr;
 	}
 }
@@ -73,7 +90,7 @@ int main()
 			auto _ = win1.bind();
 			clear_color({1, 1, 1, 1});
 			clear(clear_target::color_buffer);
-			arr1.draw_point(2);
+			arr1.draw_point(npoint);
 			win1.update();
 		}
 
@@ -81,7 +98,7 @@ int main()
 			auto _ = win2->bind();
 			clear_color({1, 0, 0, 1});
 			clear(clear_target::color_buffer);
-			arr2.draw_point(2);
+			arr2.draw_point(npoint);
 			win2->update();
 		}
 	}
