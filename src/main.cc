@@ -6,6 +6,7 @@
 #include "moge/steady-updater.hh"
 #include "moge/shader.hh"
 #include "moge/program.hh"
+#include "moge/uniform-variable.hh"
 #include "moge/utils.hh"
 #include "moge/vertex-array.hh"
 #include "moge/vertex-layout.hh"
@@ -74,6 +75,7 @@ int main()
 	auto arr1 = load_array  (win1);
 	auto pro1 = load_program(win1);
 	pro1.bind();
+	uniform_variable<float> time1{pro1, "time"};
 
 	optional<window> win2;
 	win2 = window{"window 2", {320, 240}};
@@ -83,6 +85,7 @@ int main()
 	auto arr2 = load_array  (*win2);
 	auto pro2 = load_program(*win2);
 	pro2.bind();
+	uniform_variable<float> time2{pro2, "time"};
 
 	auto& sys = system::instance();
 	while (sys.poll()) {
@@ -90,6 +93,7 @@ int main()
 			auto _ = win1.bind();
 			clear_color({1, 1, 1, 1});
 			clear(clear_target::color_buffer);
+			time1 = clock::now();
 			arr1.draw_point(npoint);
 			win1.update();
 		}
@@ -98,6 +102,7 @@ int main()
 			auto _ = win2->bind();
 			clear_color({1, 0, 0, 1});
 			clear(clear_target::color_buffer);
+			time2 = -clock::now();
 			arr2.draw_point(npoint);
 			win2->update();
 		}

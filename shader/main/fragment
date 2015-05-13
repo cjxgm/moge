@@ -2,9 +2,12 @@
 #version 330
 in vec4 fcolor;
 out vec4 color;
+uniform float time;
 
 void main()
 {
-	color = fcolor;
+	color = mix(fcolor,
+				vec4(0, smoothstep(-2, 1, sin(gl_FragCoord.x * time) + cos(gl_FragCoord.y * time)), smoothstep(-2, 1, cos(length(gl_FragCoord)*time)), 1),
+				smoothstep(-1, 1, sin(time*4)));
 }
 
