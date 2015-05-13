@@ -7,7 +7,8 @@
 #include "moge/shader.hh"
 #include "moge/program.hh"
 #include "moge/utils.hh"
-#include "moge/vertex_array.hh"
+#include "moge/vertex-array.hh"
+#include "moge/vertex-layout.hh"
 #include "moge/buffer.hh"
 #include <array>
 #include <type_traits>
@@ -31,9 +32,9 @@ namespace
 		auto _ = win.bind();
 		array_buffer buf;
 		buf.bind();
-		static float const points[] = {
-			-0.5, -0.5,
-			+0.3, +0.4,
+		static glm::vec2 const points[] = {
+			{ -0.5, -0.5 },
+			{ +0.3, +0.4 },
 		};
 		buf.data(buffer_usage::static_draw, points, sizeof(points));
 		return buf;
@@ -44,8 +45,7 @@ namespace
 		auto _ = win.bind();
 		vertex_array arr;
 		arr.bind();
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+		vertex_layout<glm::vec2>();
 		return arr;
 	}
 }
