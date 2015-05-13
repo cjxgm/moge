@@ -2,6 +2,8 @@
 #include "gl.hh"
 #include "meta/bind.hh"
 #include "program.hh"
+#include "exceptions.hh"
+#include "gl-traits.hh"
 #include <string>
 #include <type_traits>
 #include <glm/vec2.hpp>
@@ -39,13 +41,24 @@ namespace moge
 		using get_uniform_detail::get_uniform;
 
 		template <class T>
+		bool validate(GLuint p, GLint u)
+		{
+			GLenum type;
+			glGetActiveUniform(p, u, {}, {}, {}, &type, {});
+			return (type == gl_type_to_enum<T>);
+		}
+
+		template <class T>
 		struct uniform_variable
 		{
 			using value_type = std::decay_t<T>;
 
-			// TODO: validate uniform variable type and size
 			uniform_variable(GLuint program, GLint uniform)
-				: program{program}, uniform{uniform} {}
+				: program{program}, uniform{uniform}
+			{
+				if (!validate<value_type>(program, uniform))
+					throw uniform_failure{"type mismatch"};
+			}
 
 			uniform_variable(GLuint program, std::string const& uniform_name)
 				: uniform_variable{program,
