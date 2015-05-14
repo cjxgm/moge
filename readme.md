@@ -4,7 +4,10 @@ moge: modern opengl essentials in modern c++
 *STILL IN EARLY DEVELOPMENT STAGE*
 
 moge is a c++ library that is written in the latest c++ (currently c++17).
-it is created to ease the pain of using opengl 3.3. the library provides:
+it is created to ease the pain of using modern opengl. currently, only
+opengl 3.3 is supported, opengl 4.5 support will come later.
+
+the library provides:
 
 * window creation and destruction and receiving window events
 * multiple windows
@@ -12,6 +15,7 @@ it is created to ease the pain of using opengl 3.3. the library provides:
 * type safety
 * object-based opengl wrapper
 * and more!
+
 
 showcase
 ---------------------------------------------------------------------------
