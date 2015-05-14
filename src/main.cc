@@ -80,7 +80,7 @@ int main()
 	auto pro1 = load_program(win1);
 	pro1.bind();
 	uniform_variable<float> time1{pro1, "time"};
-	uniform_variable<glm::vec2> off1{pro1, "off"};
+	uniform_variable<glm::vec2>{pro1, "off"} = glm::vec2{0.5, 0.5};
 
 	optional<window> win2;
 	win2 = window{"window 2", {320, 240}};
@@ -99,7 +99,6 @@ int main()
 			clear_color({1, 1, 1, 1});
 			clear(clear_target::color_buffer);
 			time1 = clock::now();
-			off1 = glm::vec2{0.5, 0.5};
 			arr1.draw_point(npoint);
 			win1.update();
 		}
