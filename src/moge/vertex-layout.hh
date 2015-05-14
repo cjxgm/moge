@@ -1,6 +1,7 @@
 #pragma once
 #include "gl.hh"
 #include "gl-traits.hh"
+#include "vertex-array.hh"
 #include <cstdint>
 #include <tuple>
 
@@ -118,12 +119,19 @@ namespace moge
 	using vertex_layout_detail::make_padding;
 
 
-	template <class ...TS, std::size_t I=0>
+	template <class ...TS>
 	void vertex_layout()
 	{
 		constexpr auto stride = vertex_layout_detail::stride<TS...>;
-		using vl = vertex_layout_detail::vertex_layout<I, stride, 0, TS...>;
+		using vl = vertex_layout_detail::vertex_layout<0, stride, 0, TS...>;
 		vl::apply();
+	}
+
+	template <class ...TS>
+	void vertex_layout(vertex_array const& va)
+	{
+		auto _ = va.bind();
+		vertex_layout<TS...>();
 	}
 }
 

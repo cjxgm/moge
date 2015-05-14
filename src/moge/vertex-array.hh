@@ -2,7 +2,6 @@
 #include "gl.hh"
 #include "meta/resource.hh"
 #include "meta/resource-traits.hh"
-#include "vertex-layout.hh"
 
 namespace moge
 {
