@@ -34,18 +34,22 @@ namespace
 	{
 		glm::vec2 pos;
 		glm::vec3 color;
+		glm::vec3 useless;
+
 		static void layout()
 		{
 			vertex_layout<
 				glm::vec2,
-				glm::vec3
+				skip_index<1>,
+				glm::vec3,
+				make_padding<glm::vec3>
 			>();
 		}
 	};
 
 	vertex const points[] = {
-		{{ -0.5, -0.5 }, { 0, 1, 0 }},
-		{{ +0.3, +0.4 }, { 0, 0, 1 }},
+		{{ -0.5, -0.5 }, { 0, 1, 0 }, {}},
+		{{ +0.3, +0.4 }, { 0, 0, 1 }, {}},
 	};
 	constexpr auto npoint = sizeof(points)/sizeof(points[0]);
 

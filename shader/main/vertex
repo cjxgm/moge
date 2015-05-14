@@ -1,7 +1,7 @@
 // vim: ft=glsl noet ts=4 sw=4 sts=0
 #version 330
 layout(location=0) in vec2 vpos;
-layout(location=1) in vec3 vcolor;
+layout(location=2) in vec3 vcolor;
 out vec4 gcolor;
 uniform float time;
 uniform vec2 off;
