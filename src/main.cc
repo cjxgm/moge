@@ -1,16 +1,4 @@
-#include "moge/system.hh"
-#include "moge/window.hh"
-#include "moge/meta/optional.hh"
-#include "moge/meta/bind.hh"
-#include "moge/misc.hh"
-#include "moge/steady-updater.hh"
-#include "moge/shader.hh"
-#include "moge/program.hh"
-#include "moge/uniform-variable.hh"
-#include "moge/utils.hh"
-#include "moge/vertex-array.hh"
-#include "moge/vertex-layout.hh"
-#include "moge/buffer.hh"
+#include "moge/moge.hh"
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <array>
